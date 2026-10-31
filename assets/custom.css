@@ -1,0 +1,366 @@
+/* Hallmark · macrostructure: Workbench · tone: utilitarian · anchor hue: green
+ * theme: studied-DNA (source: https://www.mercadona.es/)
+ * observed-accent: oklch(45% 0.13 155) ≈ #007933 (verde Mercadona)
+ * observed-secondary: oklch(72% 0.16 70) ≈ #F39200 (naranja)
+ * display + body: system sans (Segoe UI / Roboto / Helvetica)
+ */
+
+:root {
+  /* Paleta Mercadona */
+  --color-primary: #007933;        /* verde Mercadona */
+  --color-primary-dark: #005c26;
+  --color-primary-light: #e6f4ea;
+  --color-accent: #f39200;         /* naranja */
+  --color-paper: #ffffff;
+  --color-paper-2: #f5f5f5;
+  --color-paper-3: #fafafa;
+  --color-ink: #333333;
+  --color-ink-2: #666666;
+  --color-ink-3: #999999;
+  --color-rule: #e0e0e0;
+  --color-danger: #c0392b;
+  --color-success-bg: #e6f4ea;
+  --color-error-bg: #fdecea;
+  --color-warn-bg: #fff4e0;
+
+  /* Tipografía */
+  --font-body: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+
+  /* Espaciado 4pt */
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+
+  /* Radios */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+
+  /* Transiciones */
+  --dur-fast: 120ms;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+html, body {
+  overflow-x: clip;
+  background: var(--color-paper-2);
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  margin: 0;
+}
+
+/* ===== Cabecera estilo Tickets ===== */
+.mercadona-header {
+  background: var(--color-primary);
+  color: #fff;
+  padding: var(--space-md) var(--space-lg);
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+}
+.mercadona-header h1 {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+}
+.mercadona-header .subtitle {
+  font-size: 13px;
+  opacity: 0.9;
+  margin: 0;
+}
+
+/* ===== Tabs estilo Tickets ===== */
+.dash-tabs .tab {
+  font-family: var(--font-body) !important;
+  font-weight: 500 !important;
+  color: var(--color-ink-2) !important;
+  background: var(--color-paper) !important;
+  border: none !important;
+  border-bottom: 3px solid transparent !important;
+  padding: 12px 20px !important;
+  transition: color var(--dur-fast) var(--ease-out);
+}
+.dash-tabs .tab--selected {
+  color: var(--color-primary) !important;
+  border-bottom: 3px solid var(--color-primary) !important;
+  background: var(--color-paper) !important;
+  font-weight: 600 !important;
+}
+.dash-tabs .tab:hover {
+  color: var(--color-primary) !important;
+}
+
+/* ===== KPI cards ===== */
+.kpi-card {
+  background: var(--color-paper);
+  border: 1px solid var(--color-rule);
+  border-top: 4px solid var(--color-primary);
+  border-radius: var(--radius-md);
+  padding: var(--space-md) var(--space-lg);
+  text-align: center;
+  min-width: 180px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+}
+.kpi-card h3 {
+  color: var(--color-primary);
+  font-size: 28px;
+  margin: 0 0 var(--space-xs) 0;
+  font-weight: 700;
+}
+.kpi-card p {
+  color: var(--color-ink-2);
+  margin: 0;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* ===== Botones ===== */
+.btn-mercadona {
+  background: var(--color-primary);
+  color: #fff;
+  border: none;
+  padding: 12px 28px;
+  border-radius: var(--radius-sm);
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: var(--font-body);
+  transition: background var(--dur-fast) var(--ease-out);
+}
+.btn-mercadona:hover { background: var(--color-primary-dark); }
+.btn-mercadona:focus-visible { outline: 3px solid var(--color-accent); outline-offset: 2px; }
+.btn-mercadona:active { transform: translateY(1px); }
+
+.btn-secondary {
+  background: var(--color-accent);
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  cursor: pointer;
+  font-family: var(--font-body);
+  transition: filter var(--dur-fast) var(--ease-out);
+}
+.btn-secondary:hover { filter: brightness(0.92); }
+.btn-secondary:focus-visible { outline: 3px solid var(--color-primary); outline-offset: 2px; }
+
+.btn-danger {
+  background: var(--color-danger);
+  color: #fff;
+  border: none;
+  padding: 5px 12px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-size: 13px;
+  font-family: var(--font-body);
+}
+
+/* ===== Panel de filtros ===== */
+.filter-panel {
+  background: var(--color-paper);
+  border: 1px solid var(--color-rule);
+  border-radius: var(--radius-md);
+  padding: var(--space-md);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-md);
+  align-items: flex-end;
+}
+.filter-panel label {
+  font-weight: 600;
+  color: var(--color-ink);
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  display: block;
+  margin-bottom: var(--space-xs);
+}
+.filter-item {
+  flex: 1 1 250px;
+  min-width: 0;
+}
+.filter-item:last-child {
+  flex: 1 1 200px;
+}
+
+/* DatePicker responsive */
+.DateInput {
+  font-size: 13px !important;
+}
+.DateInput_input {
+  font-size: 13px !important;
+  padding: 6px 8px !important;
+  width: 110px !important;
+}
+.SingleDatePicker {
+  display: inline-block !important;
+}
+
+/* ===== Tabs responsive ===== */
+.dash-tabs .tab {
+  font-size: 13px !important;
+  padding: 10px 12px !important;
+}
+
+/* ===== Cabecera responsive ===== */
+.mercadona-header {
+  flex-wrap: wrap;
+}
+.mercadona-header h1 {
+  font-size: 18px;
+}
+.mercadona-header .subtitle {
+  font-size: 12px;
+  width: 100%;
+  margin-top: var(--space-xs);
+}
+
+/* ===== KPI cards responsive ===== */
+.kpi-card {
+  flex: 1 1 140px;
+  min-width: 140px;
+}
+
+/* ===== Breakpoint móvil ===== */
+@media (max-width: 768px) {
+  .filter-panel {
+    flex-direction: column;
+    gap: var(--space-sm);
+  }
+  .filter-item {
+    flex: 1 1 100%;
+    width: 100%;
+  }
+  .SingleDatePicker {
+    display: block !important;
+  }
+  .DateInput_input {
+    width: 100% !important;
+  }
+  .dash-tabs .tab {
+    font-size: 11px !important;
+    padding: 8px 6px !important;
+  }
+  .kpi-card {
+    flex: 1 1 calc(50% - 10px);
+    min-width: 130px;
+  }
+  .kpi-card h3 {
+    font-size: 20px;
+  }
+}
+
+@media (max-width: 414px) {
+  .mercadona-header h1 {
+    font-size: 16px;
+  }
+  .dash-tabs .tab {
+    font-size: 10px !important;
+    padding: 6px 4px !important;
+  }
+}
+
+/* ===== DataTable overrides ===== */
+.dash-table-container .dash-spreadsheet-container .dash-spreadsheet-inner th {
+  background: var(--color-primary) !important;
+  color: #fff !important;
+  font-weight: 600 !important;
+  font-family: var(--font-body) !important;
+}
+.dash-table-container .dash-spreadsheet-container .dash-spreadsheet-inner td {
+  font-family: var(--font-body) !important;
+}
+
+/* ===== DataTable responsive ===== */
+@media (max-width: 768px) {
+  .dash-table-container .dash-spreadsheet-container .dash-spreadsheet-inner th,
+  .dash-table-container .dash-spreadsheet-container .dash-spreadsheet-inner td {
+    padding: 6px 4px !important;
+    font-size: 12px !important;
+    white-space: nowrap !important;
+  }
+  /* Ocultar columnas "Dirección" (col 4) en la tabla de tickets en móvil */
+  .dash-table-container .dash-spreadsheet-container .dash-spreadsheet-inner tr td:nth-child(4),
+  .dash-table-container .dash-spreadsheet-container .dash-spreadsheet-inner tr th:nth-child(4) {
+    display: none !important;
+  }
+  /* Ranking: ocultar col "Categoría" (col 2), "Precio min" (col 7), "Precio max" (col 8) */
+  .dash-table-container .dash-spreadsheet-container .dash-spreadsheet-inner tr td:nth-child(2),
+  .dash-table-container .dash-spreadsheet-container .dash-spreadsheet-inner tr th:nth-child(2),
+  .dash-table-container .dash-spreadsheet-container .dash-spreadsheet-inner tr td:nth-child(7),
+  .dash-table-container .dash-spreadsheet-container .dash-spreadsheet-inner tr th:nth-child(7),
+  .dash-table-container .dash-spreadsheet-container .dash-spreadsheet-inner tr td:nth-child(8),
+  .dash-table-container .dash-spreadsheet-container .dash-spreadsheet-inner tr th:nth-child(8) {
+    display: none !important;
+  }
+  .dash-table-container .dash-spreadsheet-container .previous-next-buttons .page-number {
+    font-size: 12px !important;
+  }
+}
+
+@media (max-width: 414px) {
+  .dash-table-container .dash-spreadsheet-container .dash-spreadsheet-inner th,
+  .dash-table-container .dash-spreadsheet-container .dash-spreadsheet-inner td {
+    padding: 4px 3px !important;
+    font-size: 11px !important;
+  }
+}
+
+/* ===== Consola de ingesta (mantener terminal pero enmarcarda) ===== */
+.ingest-console {
+  background: #1e1e1e;
+  color: #7ee787;
+  padding: var(--space-md);
+  border-radius: var(--radius-md);
+  font-family: "SF Mono", Consolas, monospace;
+  font-size: 13px;
+  min-height: 200px;
+  max-height: 400px;
+  overflow-y: auto;
+  white-space: pre-wrap;
+  border: 1px solid var(--color-rule);
+}
+
+/* ===== Mensajes de feedback ===== */
+.feedback-success {
+  color: var(--color-primary);
+  background: var(--color-success-bg);
+  padding: 10px;
+  border-radius: var(--radius-sm);
+  border-left: 4px solid var(--color-primary);
+}
+.feedback-error {
+  color: var(--color-danger);
+  background: var(--color-error-bg);
+  padding: 10px;
+  border-radius: var(--radius-sm);
+  border-left: 4px solid var(--color-danger);
+}
+.feedback-warn {
+  color: #8a5a00;
+  background: var(--color-warn-bg);
+  padding: 10px;
+  border-radius: var(--radius-sm);
+  border-left: 4px solid var(--color-accent);
+}
+
+/* ===== Footer ===== */
+.mercadona-footer {
+  text-align: center;
+  color: var(--color-ink-3);
+  padding: var(--space-lg);
+  font-size: 13px;
+  border-top: 1px solid var(--color-rule);
+  margin-top: var(--space-xl);
+  background: var(--color-paper);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition-duration: 0.01ms !important; }
+}

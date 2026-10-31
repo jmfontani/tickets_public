@@ -1,0 +1,57 @@
+services:
+  tickets-dashboard:
+    build:
+      context: .
+      dockerfile: Dockerfile.n8n
+    container_name: tickets
+    ports:
+      - "8050:8050"
+    volumes:
+      - ./data:/app/data
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      - PYTHONUNBUFFERED=1
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks:
+      - default
+      - wikis_default
+
+  # Lanza la API de ingesta junto al dashboard dentro de un segundo contenedor
+  # que comparte el volumen ./data (misma BD SQLite). El dashboard queda intacto.
+  tickets-ingest-api:
+    build:
+      context: .
+      dockerfile: Dockerfile.n8n
+    container_name: tickets-ingest-api
+    command: ["python3", "/app/ingest_api.py", "8060"]
+    ports:
+      - "8060:8060"
+    volumes:
+      - ./data:/app/data
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      - PYTHONUNBUFFERED=1
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8060/health"]
+      interval: 30s
+      timeout: 10s
+      start_period: 10s
+      retries: 3
+    networks:
+      n8n_network:
+        aliases:
+          - tickets-ingest-api
+      default: {}
+
+networks:
+  wikis_default:
+    external: true
+  n8n_network:
+    external: true

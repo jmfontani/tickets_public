@@ -1,0 +1,197 @@
+{
+  "name": "Tickets · Ingesta n8n",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [{"field": "cronExpression", "expression": "0 3 * * *"}]
+        }
+      },
+      "id": "schedule-1",
+      "name": "Cada noche 3:00",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [-200, 0]
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "tickets-ingest",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook-1",
+      "name": "Webhook manual /tickets-ingest",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [-200, 220],
+      "webhookId": "tickets-ingest"
+    },
+    {
+      "parameters": {
+        "url": "http://tickets-ingest-api:8060/ingest",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={}",
+        "options": {"timeout": 10000}
+      },
+      "id": "http-1",
+      "name": "POST /ingest (202 async)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [40, 110]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {"caseSensitive": true, "version": 2},
+          "conditions": [
+            {
+              "leftValue": "={{ $json.statusCode }}",
+              "rightValue": 202,
+              "operator": {"type": "number", "operation": "equals"}
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "if-accepted-1",
+      "name": "¿Aceptado (202)?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [240, 110]
+    },
+    {
+      "parameters": {
+        "amount": 60,
+        "unit": "seconds"
+      },
+      "id": "wait-1",
+      "name": "Esperar 60s",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [440, 40],
+      "webhookId": "wait-tickets-poll"
+    },
+    {
+      "parameters": {
+        "url": "http://tickets-ingest-api:8060/status",
+        "options": {"timeout": 10000}
+      },
+      "id": "http-2",
+      "name": "GET /status",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [640, 40]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {"caseSensitive": true, "version": 2},
+          "conditions": [
+            {
+              "leftValue": "={{ $json.running }}",
+              "rightValue": true,
+              "operator": {"type": "boolean", "operation": "false"}
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "if-done-1",
+      "name": "¿Terminado?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [840, 40]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {"caseSensitive": true, "version": 2},
+          "conditions": [
+            {
+              "leftValue": "={{ $json.error }}",
+              "rightValue": "",
+              "operator": {"type": "string", "operation": "notEmpty", "singleValue": true}
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "if-error-1",
+      "name": "¿Hubo error?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [1040, -40]
+    },
+    {
+      "parameters": {
+        "jsCode": "const s = $input.first().json;\nconst r = s.result || {};\nconst errores = (r.errors || []);\nlet msg = '*Pipeline tickets (vía n8n)*\\n';\nif (s.error) {\n  msg = '❌ *Fallo del pipeline tickets*: ' + s.error;\n} else {\n  msg += `Tickets imagen: *${r.tickets_from_image ?? 0}* · PDFs: *${r.tickets_from_pdf ?? 0}*\\n`;\n  msg += `BD total: *${r.tickets_in_db ?? '-'}* tickets · *${r.items_in_db ?? '-'}* items · *${r.total_gastado ?? '-'}* €\\n`;\n  msg += `Duración: *${r.elapsed_s ?? '-'}s*\\n`;\n  if (errores.length) {\n    msg += `\\n⚠️ Errores (${errores.length}):\\n` + errores.slice(0,5).map(e => '• ' + e).join('\\n');\n  } else {\n    msg += '\\n✅ Sin errores';\n  }\n}\nreturn [{ json: { wa_message: msg } }];"
+      },
+      "id": "msg-1",
+      "name": "Formatear mensaje",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1240, 0]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://172.17.0.1:3001/send",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ chatId: 'CAMBIAME@c.us', message: $json.wa_message }) }}",
+        "options": {"timeout": 30000}
+      },
+      "id": "wa-1",
+      "name": "Enviar WhatsApp",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1240, 140]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ whatsapp: 'sent', detalle: $json }) }}",
+        "options": {}
+      },
+      "id": "resp-1",
+      "name": "Responder webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [1440, 140]
+    }
+  ],
+  "connections": {
+    "Webhook manual /tickets-ingest": {"main": [[{"node": "POST /ingest (202 async)", "type": "main", "index": 0}]]},
+    "POST /ingest (202 async)": {"main": [[{"node": "¿Aceptado (202)?", "type": "main", "index": 0}]]},
+    "¿Aceptado (202)?": {
+      "main": [
+        [{"node": "Esperar 60s", "type": "main", "index": 0}],
+        [{"node": "Formatear mensaje", "type": "main", "index": 0}]
+      ]
+    },
+    "Esperar 60s": {"main": [[{"node": "GET /status", "type": "main", "index": 0}]]},
+    "GET /status": {"main": [[{"node": "¿Terminado?", "type": "main", "index": 0}]]},
+    "¿Terminado?": {
+      "main": [
+        [{"node": "¿Hubo error?", "type": "main", "index": 0}],
+        [{"node": "Esperar 60s", "type": "main", "index": 0}]
+      ]
+    },
+    "¿Hubo error?": {
+      "main": [
+        [{"node": "Formatear mensaje", "type": "main", "index": 0}],
+        [{"node": "Formatear mensaje", "type": "main", "index": 0}]
+      ]
+    },
+    "Formatear mensaje": {"main": [[{"node": "Enviar WhatsApp", "type": "main", "index": 0}]]},
+    "Enviar WhatsApp": {"main": [[{"node": "Responder webhook", "type": "main", "index": 0}]]}
+  },
+  "settings": {"executionOrder": "v1"},
+  "pinData": {},
+  "meta": {"templateCredsSetupCompleted": false}
+}

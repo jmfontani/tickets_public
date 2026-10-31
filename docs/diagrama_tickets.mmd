@@ -1,0 +1,62 @@
+flowchart TB
+  subgraph SRC["📧 Fuentes"]
+    G1["Gmail principal"]
+    G2["Gmail secundario"]
+  end
+
+  subgraph N8N["⚙️ n8n (contenedor CasaOS)"]
+    CRON["⏰ cron 3:00<br/>0 3 * * *"]
+    HOOK["🪝 webhook<br/>POST /webhook/tickets-ingest"]
+    POLL["bucle: POST :8060/ingest → 202<br/>espera 60 s → GET :8060/status"]
+    WA["WhatsApp resumen<br/>POST 172.17.0.1:3001/send"]
+  end
+
+  subgraph API["tickets-ingest-api (:8060)"]
+    ING["run_ingestion()<br/>409 busy si ya hay job"]
+    IMAP["📥 IMAP (7 días)<br/>PDF Mercadona vs fotos"]
+    DEDUP["dedup content_hash MD5"]
+    NORM["normalización"]
+    TAX["taxonomía:<br/>1. overrides manuales<br/>2. reglas Mercadona<br/>3. LLM (solo lo pendiente)"]
+  end
+
+  subgraph OLL["🦙 Ollama host :11434<br/>(via host.docker.internal)"]
+    OCRM["minicpm-v4.5:8b<br/>OCR de fotos"]
+    CLSM["deepseek-v4.1-flash<br/>clasificación productos"]
+  end
+
+  subgraph DBA["🗂 data/ ( volumen compartido )"]
+    SQLite[("tickets.db<br/>254 tickets · 6.791 líneas<br/>tickets · line_items<br/>taxonomy_overrides · catalog_products")]
+  end
+
+  subgraph DASH["📊 tickets (:8050 Streamlit)"]
+    UI["8 vistas: Panel, Establecimiento,<br/>Categoría, Producto, Temporal,<br/>Tickets, Categorías ⚙️, Ingesta 📥"]
+  end
+
+  subgraph PUB["🌐 Publicación"]
+    AUTH["Authelia SSO 1FA"]
+    NGINX["nginx wikis :443<br/>location /tickets/ → :8050<br/>baseUrlPath=tickets"]
+  end
+
+  G1 --> IMAP
+  G2 --> IMAP
+  CRON --> POLL
+  HOOK --> POLL
+  POLL --> ING
+  ING --> IMAP --> DEDUP --> NORM --> TAX
+  IMAP -- "fotos" --> OCRM
+  TAX -- "pendientes" --> CLSM
+  ING --> SQLite
+  TAX --> SQLite
+  POLL --> WA
+  SQLite -.->|lectura| UI
+  UI -.->|"lanzar ingesta / reclas"| HOOK
+  UI --> NGINX --> AUTH
+  U["👤 Usuario"] -->|"ejemplo.com/tickets/"| AUTH
+
+  style SRC fill:#eef4f5
+  style N8N fill:#fdf3e7
+  style API fill:#e8f0fb
+  style OLL fill:#f0e8fb
+  style DBA fill:#eaf7ec
+  style DASH fill:#fdf0f0
+  style PUB fill:#f5f5f5

@@ -1,0 +1,14 @@
+# .dockerignore
+__pycache__/
+*.pyc
+*.pyo
+data/
+*.db
+*.pdf
+.env
+.venv/
+venv/
+*.egg-info/
+.git/
+tests/
+.hermes/

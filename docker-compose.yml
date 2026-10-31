@@ -1,0 +1,22 @@
+services:
+  tickets-dashboard:
+    build: .
+    container_name: tickets
+    ports:
+      - "8050:8050"
+    volumes:
+      - ./data:/app/data
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      - PYTHONUNBUFFERED=1
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks:
+      - default
+      - wikis_default
+
+networks:
+  wikis_default:
+    external: true

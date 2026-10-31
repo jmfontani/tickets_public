@@ -1,0 +1,36 @@
+# Secretos
+.env
+.env.*
+.env.bak*
+*.env.bak*
+.env.bak-*
+
+# Datos (BD, originales, backups — no versionar)
+data/
+*.db
+*.db.bak*
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Contenedor fix local
+mercadona-fix/
+
+# Backups/rollback locales
+rollback/
+
+# Scripts de depuración puntual (pruebas de prompt/app, sondas)
+# No son herramientas del pipeline: son pruebas sueltas de desarrollo.
+tmp_*.py
+prueba_*.py
+diagnostico_prosa.py
+
+# Editor
+.vscode/
+.idea/
+
+# No versionado: datos locales / resultados con datos personales
+experimentos/

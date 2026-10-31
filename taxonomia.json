@@ -1,0 +1,62 @@
+{
+  "Alimentación": [
+    "Lácteos y huevos",
+    "Carnes y embutidos",
+    "Pescados y mariscos",
+    "Frutas",
+    "Verduras y hortalizas",
+    "Pan y bollería",
+    "Pasta y arroz",
+    "Legumbres",
+    "Conservas",
+    "Sopas y caldos",
+    "Aceites y condimentos",
+    "Salsas",
+    "Comida preparada",
+    "Café e infusiones",
+    "Cacao y dulces",
+    "Cereales y desayuno",
+    "Frutos secos",
+    "Snacks salados",
+    "Harinas y repostería"
+  ],
+  "Bebidas": [
+    "Aguas",
+    "Refrescos",
+    "Cervezas",
+    "Vinos",
+    "Otras bebidas"
+  ],
+  "Hogar y limpieza": [
+    "Detergentes y suavizantes",
+    "Limpieza superficies",
+    "Papel y bolsas",
+    "Utensilios limpieza",
+    "Ambientación",
+    "Otros hogar"
+  ],
+  "Higiene y cuidado personal": [
+    "Cuidado capilar",
+    "Cuidado corporal",
+    "Higiene bucal",
+    "Cuidado íntimo",
+    "Papel y pañuelos",
+    "Maquillaje",
+    "Desodorantes",
+    "Protección solar",
+    "Botiquín"
+  ],
+  "Otros": [
+    "Varios"
+  ],
+  "Mobiliario": [
+    "Muebles",
+    "Iluminación",
+    "Decoración"
+  ],
+  "Ropa y hogar": [
+    "Textil hogar",
+    "Ropa",
+    "Calzado"
+  ]
+}
